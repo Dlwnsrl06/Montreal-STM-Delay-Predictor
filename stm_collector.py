@@ -1,12 +1,13 @@
 import time 
 import os
+import random
 from datetime import datetime 
 import requests
 from google.transit import gtfs_realtime_pb2
 
 API_KEY = "l7f8098095215344e5828c55e56dba3d4a" 
 URL = "https://api.stm.info/pub/od/gtfs-rt/ic/v2/tripUpdates"
-CSV_FILE = "montreal_transit_history.csv"
+CSV_FILE = "montreal_transit_dataset.csv"
 
 def fetch_transit_data(): # Phase 1: API Request
     params = {
@@ -40,6 +41,8 @@ def fetch_transit_data(): # Phase 1: API Request
                         if stop_update.HasField('departure'): #checks if it has departure timing deviation record
                             delay_seconds = stop_update.departure.delay #extracts the delay
 
+                            print(f"DEBUG: Route {route_id} | Raw Delay Value: {delay_seconds}") #TESTER
+
                             #Calculate our target variables
                             delay_minutes = round(delay_seconds / 60.0, 2)
 
@@ -49,9 +52,9 @@ def fetch_transit_data(): # Phase 1: API Request
                                 is_delayed = 0
 
                             #create a clean data row
-                            record = f"{timestamp},{route_id},{delay_seconds},{delay_minutes},{is_delayed}\n" #formatted string literal - put variables in strings
-                            new_records = [] #resets for the inner loop 
-                            save_record(record) #Helper function 
+                            if delay_seconds > 0 or (delay_seconds == 0 and random.random() < 0.01):
+                                record = f"{timestamp},{route_id},{delay_seconds},{delay_minutes},{is_delayed}\n" #formatted string literal - put variables in strings
+                                save_record(record) #Helper function 
                         
             print(f"[{timestamp}] Successfully captured snapshot and appended the data.")
 
@@ -77,4 +80,4 @@ def save_record(row_text): #Writing snapshot record to hard drive
 print("Starting the Montreal STM Data Collector... Press Ctrl+C to stop.")
 while True:
     fetch_transit_data()
-    time.sleep(300) #snapshots data every 5 minutes 
+    time.sleep(600) #snapshots data every 10 minutes 
