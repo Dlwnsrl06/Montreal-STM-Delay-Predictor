@@ -27,8 +27,8 @@ def fetch_transit_data(): # Phase 1: API Request
             feed.ParseFromString(response.content) #converts binary data -> readable data
 
             #prepwork to collect snapshot of data
-            new_records = []
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            records_saved = 0
 
             # Phase 3: Extracting Target Variables
             for entity in feed.entity: #loops through all objects in data
@@ -38,25 +38,34 @@ def fetch_transit_data(): # Phase 1: API Request
 
                     #Look at the stop time updates to find delays
                     for stop_update in entity.trip_update.stop_time_update: #loops for every bus stop
-                        if stop_update.HasField('departure'): #checks if it has departure timing deviation record
-                            delay_seconds = stop_update.departure.delay #extracts the delay
+                        if stop_update.HasField('departure') or stop_update.HasField('arrival'):
+                            delay_seconds = 0
 
-                            print(f"DEBUG: Route {route_id} | Raw Delay Value: {delay_seconds}") #TESTER
+                            if stop_update.HasField('departure') and stop_update.departure.HasField('delay'):
+                                delay_seconds = stop_update.departure.delay #extracts the delay
+                            elif stop_update.HasField('arrival') and stop_update.arrival.HasField('delay'):
+                                delay_seconds = stop_update.arrival.delay
+
 
                             #Calculate our target variables
                             delay_minutes = round(delay_seconds / 60.0, 2)
 
-                            if delay_seconds > 60: #has to be a different minute to be considered delayed
+                            if delay_seconds > 300: #major disruption if delay is >5 minutes
                                 is_delayed = 1
                             else:
                                 is_delayed = 0
 
                             #create a clean data row
-                            if delay_seconds > 0 or (delay_seconds == 0 and random.random() < 0.01):
-                                record = f"{timestamp},{route_id},{delay_seconds},{delay_minutes},{is_delayed}\n" #formatted string literal - put variables in strings
-                                save_record(record) #Helper function 
+                            record = f"{timestamp},{route_id},{delay_seconds},{delay_minutes},{is_delayed}\n" #formatted string literal - put variables in strings
+
+                            if is_delayed == 1:
+                                save_record(record)
+                                records_saved += 1
+                            elif is_delayed == 0 and random.random() < 0.05:
+                                save_record(record)
+                                records_saved += 1
                         
-            print(f"[{timestamp}] Successfully captured snapshot and appended the data.")
+            print(f"[{timestamp}] Successfully captured snapshot and appended {records_saved} records.")
 
         elif response.status_code == 401:
             print("Error: Unauthorized. Check that your API key is pasted correctly inside the quotes.")
