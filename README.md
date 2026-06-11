@@ -6,7 +6,7 @@ A machine learning pipeline that **predicts STM (Société de transport de Montr
 
 ## Overview
 
-This project was inspired by a previous transit delay predictor built on a pre-defined Kaggle dataset. The goal here was to take that a step further — instead of working with clean, ready-made data, this project required pulling real-time data directly from the STM API and Meteostat library, cleaning it, and analyzing it from scratch, making it significantly more complex and a much closer reflection of real-world data engineering.
+This project was inspired by a previous transit delay predictor built on a pre-defined Kaggle dataset. The goal here was to take that a step further: instead of working with clean, ready-made data, this project required pulling real-time data directly from the STM API and Meteostat library, cleaning it, and analyzing it from scratch, making it significantly more complex and a much closer reflection of real-world data engineering.
 
 This project also went through several pivots informed by the actual data:
 
