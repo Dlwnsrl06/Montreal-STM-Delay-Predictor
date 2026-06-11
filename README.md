@@ -39,10 +39,10 @@ stm-transit-eta-predictor/
 The main entry point. Just run this once and leave it running as it automatically calls the collector every **10 minutes** and triggers model retraining after every **6 cycles (1 hour)**. Logs all activity and retries automatically on errors.
 
 ### `src/stm_collector.py` — Data Collector
-Called by the pipeline on each cycle. Polls the STM real-time API and records live bus arrival data paired with current Montreal weather conditions (temperature, precipitation, wind, etc.) from the Meteostat API. Each snapshot is saved to `data_collection/`.
+Called by the pipeline on each cycle. Pulls the STM real-time API and records live bus arrival data paired with current Montreal weather conditions (temperature, precipitation, wind, etc.) from the Meteostat API. Each snapshot is saved to `data_collection/`.
 
 ### `ml_model/train_model.py` — Model Trainer
-Called by the pipeline after every 6 collection cycles. Trains a regression model on the accumulated data, using weather as features to predict bus travel time. Saves each trained model to `model_versions/`.
+Called by the pipeline after every 6 collection cycles. Trains a linear regression model on the accumulated data, using weather as features to predict bus travel time. Saves each trained model to `model_versions/`.
 
 ### `main.ipynb` — Visualization
 Run this separately in Jupyter once data has been collected. Lets you explore the dataset and evaluate model performance with charts and metrics.
