@@ -13,7 +13,7 @@ WAIT_TIME_SECONDS = 600  # 10 minutes between collection runs
 TRAIN_EVERY_N_RUNS = 6   # Train after 6 collection cycles (1 hour)
 
 def run_pipeline():
-    run_count = 6
+    run_count = 0
     
     logging.info("Pipeline Manager Started.")
     
