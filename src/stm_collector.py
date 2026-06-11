@@ -7,7 +7,7 @@ from google.transit import gtfs_realtime_pb2
 
 API_KEY = "l7f8098095215344e5828c55e56dba3d4a" 
 URL = "https://api.stm.info/pub/od/gtfs-rt/ic/v2/tripUpdates"
-CSV_FILE = "data/montreal_travel_time.csv"
+CSV_FILE = "data_collection/stm_travel_time.csv"
 
 def fetch_transit_data(): # Phase 1: API Request
     params = {

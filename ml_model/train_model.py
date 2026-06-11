@@ -11,7 +11,7 @@ import numpy as np
 
 def train_and_save_model():
     #Phase 1: loading the csv
-    df = pd.read_csv("data/montreal_travel_time.csv")
+    df = pd.read_csv("data_collection/stm_travel_time.csv")
 
     #convert the timestamp text into a smart Pandas datetime object
     df['timestamp'] = pd.to_datetime(df['timestamp'])
@@ -33,7 +33,7 @@ def train_and_save_model():
 
 
     #Phase 3: Merging datasets
-    transit_df = pd.read_csv('data/montreal_travel_time.csv')
+    transit_df = pd.read_csv('data_collection/stm_travel_time.csv')
 
     transit_df['timestamp'] = pd.to_datetime(transit_df['timestamp'])
     weather_df['time'] = pd.to_datetime(weather_df['time'])
@@ -83,7 +83,7 @@ def train_and_save_model():
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S') #this creates a timestamp specific to the moment you run the notebook
 
     # Define the log file name
-    log_file = 'data/performance_log.csv'
+    log_file = 'data_collection/ml_model_performance_log.csv'
 
     rounded_mae = round(mae, 2)
     rounded_rmse = round(rmse, 2)
