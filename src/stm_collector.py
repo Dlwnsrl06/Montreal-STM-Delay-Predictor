@@ -7,7 +7,7 @@ from google.transit import gtfs_realtime_pb2
 
 API_KEY = "l7f8098095215344e5828c55e56dba3d4a" 
 URL = "https://api.stm.info/pub/od/gtfs-rt/ic/v2/tripUpdates"
-CSV_FILE = "montreal_transit_dataset.csv"
+CSV_FILE = "montreal_travel_time.csv"
 
 def fetch_transit_data(): # Phase 1: API Request
     params = {
@@ -30,45 +30,44 @@ def fetch_transit_data(): # Phase 1: API Request
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             records_saved = 0
 
+
             # Phase 3: Extracting Target Variables
             for entity in feed.entity: #loops through all objects in data
                 if entity.HasField('trip_update'): #discards anything that is not vehicles with dynamic schedule records
                     trip = entity.trip_update.trip
                     route_id = trip.route_id
 
-                    #Look at the stop time updates to find delays
-                    for stop_update in entity.trip_update.stop_time_update: #loops for every bus stop
-                        if stop_update.HasField('departure') or stop_update.HasField('arrival'):
-                            delay_seconds = 0
+                    stops = entity.trip_update.stop_time_update
 
-                            if stop_update.HasField('departure') and stop_update.departure.HasField('delay'):
-                                delay_seconds = stop_update.departure.delay #extracts the delay
-                            elif stop_update.HasField('arrival') and stop_update.arrival.HasField('delay'):
-                                delay_seconds = stop_update.arrival.delay
+                    if len(stops) >= 2: #need two stops to measure travel time
+                        stop_1 = stops[0]
+                        stop_2 = stops[1]
 
+                        #confirm arrival time exists in API
+                        if stop_1.HasField('departure') and stop_2.HasField('arrival'):
+                            time_1 = stop_1.departure.time
+                            time_2 = stop_2.arrival.time
 
-                            #Calculate our target variables
-                            delay_minutes = round(delay_seconds / 60.0, 2)
+                            #calculate the travel time in seconds
+                            travel_time_seconds = time_2 - time_1
 
-                            if delay_seconds > 300: #major disruption if delay is >5 minutes
-                                is_delayed = 1
-                            else:
-                                is_delayed = 0
+                            #common sense check -> if its positive value
+                            if travel_time_seconds > 0 and travel_time_seconds < 3600:
+                                travel_minutes = round(travel_time_seconds / 60.0, 2)
 
-                            #create a clean data row
-                            record = f"{timestamp},{route_id},{delay_seconds},{delay_minutes},{is_delayed}\n" #formatted string literal - put variables in strings
+                                if random.random() < 0.10: #collect for 10% of the values to save storage 
+                                    #create clean data row
+                                    record = f"{timestamp},{route_id},{travel_time_seconds},{travel_minutes}\n"
 
-                            if is_delayed == 1:
-                                save_record(record)
-                                records_saved += 1
-                            elif is_delayed == 0 and random.random() < 0.05:
-                                save_record(record)
-                                records_saved += 1
+                                    save_record(record)
+                                    records_saved += 1
+
+                    
                         
-            print(f"[{timestamp}] Successfully captured snapshot and appended {records_saved} records.")
+            print(f"[{timestamp}] Successfully captured snapshot and appended {records_saved} travel segments.")
 
         elif response.status_code == 401:
-            print("Error: Unauthorized. Check that your API key is pasted correctly inside the quotes.")
+            print("Error: Unauthorized. Check that your API key is pasted correctly inside quotes.")
         
         else:
             print(f"Failed to connect. HTTP Status Code: {response.status_code}")
@@ -82,7 +81,7 @@ def save_record(row_text): #Writing snapshot record to hard drive
 
     with open(CSV_FILE, "a") as f:
         if not file_exists:
-            f.write("timestamp,route_id,delay_seconds,delay_minutes,is_delayed\n")
+            f.write("timestamp,route_id,travel_seconds,travel_minutes\n")
         f.write(row_text)
 
 # Phase 4: Polling Loop
