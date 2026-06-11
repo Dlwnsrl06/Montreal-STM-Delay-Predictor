@@ -11,7 +11,7 @@ This project was inspired by a previous transit delay predictor built on a pre-d
 This project also went through several pivots informed by the actual data:
 
 - The STM API uses an exception-based protocol that filters out minor schedule deviations, producing sparse, zero-heavy delay data
-- The API doesn't expose a raw "delay" field — it contains actual arrival times, making delay calculation memory-intensive
+- The API doesn't include a raw "delay" field as it contains actual arrival times, making delay calculation memory-intensive
 - The final model focuses on **predicting travel time based on Montreal weather conditions** (temperature, precipitation, wind, etc.)
 
 ---
