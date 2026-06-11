@@ -7,7 +7,7 @@ from google.transit import gtfs_realtime_pb2
 
 API_KEY = "l7f8098095215344e5828c55e56dba3d4a" 
 URL = "https://api.stm.info/pub/od/gtfs-rt/ic/v2/tripUpdates"
-CSV_FILE = "montreal_travel_time.csv"
+CSV_FILE = "data/montreal_travel_time.csv"
 
 def fetch_transit_data(): # Phase 1: API Request
     params = {
@@ -86,6 +86,5 @@ def save_record(row_text): #Writing snapshot record to hard drive
 
 # Phase 4: Polling Loop
 print("Starting the Montreal STM Data Collector... Press Ctrl+C to stop.")
-while True:
-    fetch_transit_data()
-    time.sleep(600) #snapshots data every 10 minutes 
+fetch_transit_data()
+
