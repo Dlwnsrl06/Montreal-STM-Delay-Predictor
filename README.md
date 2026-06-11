@@ -36,7 +36,7 @@ stm-transit-eta-predictor/
 ## How It Works
 
 ### `run_pipeline.py` — Pipeline Orchestrator
-The main entry point. Just run this once and leave it running — it automatically calls the collector every **10 minutes** and triggers model retraining after every **6 cycles (1 hour)**. Logs all activity and retries automatically on errors.
+The main entry point. Just run this once and leave it running as it automatically calls the collector every **10 minutes** and triggers model retraining after every **6 cycles (1 hour)**. Logs all activity and retries automatically on errors.
 
 ### `src/stm_collector.py` — Data Collector
 Called by the pipeline on each cycle. Polls the STM real-time API and records live bus arrival data paired with current Montreal weather conditions (temperature, precipitation, wind, etc.) from the Meteostat API. Each snapshot is saved to `data_collection/`.
