@@ -55,7 +55,7 @@ def fetch_transit_data(): # Phase 1: API Request
                             if travel_time_seconds > 0 and travel_time_seconds < 3600:
                                 travel_minutes = round(travel_time_seconds / 60.0, 2)
 
-                                if random.random() < 0.10: #collect for 10% of the values to save storage 
+                                if random.random() < 0.20: #collect for 10% of the values to save storage 
                                     #create clean data row
                                     record = f"{timestamp},{route_id},{travel_time_seconds},{travel_minutes}\n"
 
