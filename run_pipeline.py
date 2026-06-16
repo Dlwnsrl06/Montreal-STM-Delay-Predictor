@@ -15,8 +15,6 @@ TRAIN_EVERY_N_RUNS = 6   # Train after 6 collection cycles (1 hour)
 def run_pipeline():
     run_count = 0
     
-    logging.info("Pipeline Manager Started.")
-    
     while True:
         try:
             # 1. Run the Data Collector
