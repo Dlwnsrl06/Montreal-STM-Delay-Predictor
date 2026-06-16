@@ -4,9 +4,8 @@ import joblib
 import os
 from datetime import datetime, timedelta  # Required for your time logic
 import meteostat as ms
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+from xgboost import XGBRegressor
 import numpy as np
 
 TRANSIT_CSV = 'data_collection/stm_travel_time.csv'
@@ -117,12 +116,12 @@ def train_and_save_model():
     y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
 
     #train the model with the train data
-    model = GradientBoostingRegressor(
-        n_estimators = 200,
-        learning_rate = 0.05,
-        max_depth = 4,
-        subsample = 0.8, #trains 80% of rows per tree -> reduces overfitting
-        random_state = 42
+    model = XGBRegressor(
+        n_estimators=200,
+        learning_rate=0.05,
+        max_depth=4,
+        subsample=0.8,
+        random_state=42
     )
 
     model.fit(X_train, y_train)
