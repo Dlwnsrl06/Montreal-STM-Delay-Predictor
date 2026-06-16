@@ -1,3 +1,5 @@
+06-16-2026-2: Changed ML algorithm from Linear Regression to Gradient Boosting Regression
+  
 06-16-2026: Previously fetched 10 days of weather on every single run, meaning training data was always a sliding window — the model kept forgetting old patterns. Now we only fetch what's missing and append it to a growing local CSV. First run grabs 30 days; every run after that just tops it up by a few hours.
   
 06-10-2026-2: Completed building the ml-model, created piplines to automate the training, created logs to record the training process, built a Jupyter notbook to visualize results of this project 
