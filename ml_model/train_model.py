@@ -102,11 +102,12 @@ def train_and_save_model():
 
 
     #Phase 4: Training ML model
+    final_dataset['route_id'] = final_dataset['route_id'].astype('category')
     final_dataset = build_features(final_dataset)
 
     #define codomain and domain for the model
     y = final_dataset['travel_minutes']
-    X = final_dataset.drop(columns=['timestamp', 'route_id', 'travel_seconds', 'travel_minutes'])
+    X = final_dataset.drop(columns=['timestamp', 'travel_seconds', 'travel_minutes'])
 
     #rewrite every column name as pure text
     X.columns = [str(c) for c in X.columns]
@@ -121,7 +122,8 @@ def train_and_save_model():
         learning_rate=0.05,
         max_depth=4,
         subsample=0.8,
-        random_state=42
+        random_state=42,
+        enable_categorical=True
     )
 
     model.fit(X_train, y_train)
