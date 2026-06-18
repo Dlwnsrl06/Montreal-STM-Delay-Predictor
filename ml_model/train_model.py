@@ -102,7 +102,7 @@ def train_and_save_model():
 
 
     #Phase 4: Training ML model
-    final_dataset['route_id'] = final_dataset['route_id'].astype('category')
+    final_dataset['route_id'] = final_dataset['route_id'].astype(str).astype('category')
     final_dataset = build_features(final_dataset)
 
     #define codomain and domain for the model
